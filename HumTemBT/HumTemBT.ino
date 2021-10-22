@@ -1,21 +1,43 @@
 #include <SoftwareSerial.h>
-#include <DHT.h>
-#define DHTPIN 2               // 핀설정
-#define DHTTYPE DHT22      // DHT type
-DHT dht(DHTPIN, DHTTYPE);
-#define BT_RXD 8
-#define BT_TXD 7
+#include <Servo.h>
+#define BT_RXD 7
+#define BT_TXD 8
+
+const int SERVO = 10;
+Servo servo;
 SoftwareSerial bluetooth(BT_TXD, BT_RXD);
- 
+
 void setup(){
   Serial.begin(9600);
   bluetooth.begin(9600);
+  servo.attach(SERVO);
+  servo.write(0);
 }
- 
+
+void turn(){
+  int angle = 0;
+  for(angle=0;angle<=180;angle++){
+    servo.write(angle);
+    delay(5);
+  }
+  for(angle=180;angle>=0;angle--) {
+    servo.write(angle);
+    delay(5);
+  }
+}
+
+
+
 void loop(){
-  int h = dht.readHumidity();
-  int t = dht.readTemperature();
-  bluetooth.print(h);
-  bluetooth.print(t);
-  delay(2000);
+  if (bluetooth.available()) {
+    String r = bluetooth.readStringUntil('\n');
+    r.trim();
+    if (r=="turn"){
+      turn();
+     }
+    Serial.print(r);
+  }
+  if (Serial.available()) {
+    bluetooth.write(Serial.read());
+  }
 }

@@ -10,11 +10,11 @@ void loop() {
   int angle=0;
   for(angle=0;angle<=180;angle++){
     servo.write(angle);
-    delay(20);
+    delay(5);
   }
   for(angle=180;angle>=0;angle--) {
     servo.write(angle);
-    delay(20);
+    delay(5);
   }
   servo.detach();
 }
