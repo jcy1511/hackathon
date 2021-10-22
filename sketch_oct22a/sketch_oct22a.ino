@@ -1,20 +1,19 @@
-#include <Servo.h>
-
-const int SERVO = 10;
-Servo servo;
-void setup() {
-  servo.attach(SERVO);
+#include <SoftwareSerial.h>
+ 
+#define BT_RXD 8
+#define BT_TXD 7
+SoftwareSerial bluetooth(BT_RXD, BT_TXD);
+ 
+void setup(){
+  Serial.begin(9600);
+  bluetooth.begin(9600);
 }
-
-void loop() {
-int angle=0;
-for(angle=0;angle<=180;angle++){
-servo.write(angle);
-delay(10);
-}
-for(angle=180;angle>=0;angle--) {
-  servo.write(angle);
-  delay(20);
-}
-servo.detach();
+ 
+void loop(){
+  if (bluetooth.available()) {
+    Serial.write(bluetooth.read());
+  }
+  if (Serial.available()) {
+    bluetooth.write(Serial.read());
+  }
 }
